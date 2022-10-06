@@ -61,7 +61,7 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user) # melakukan login terlebih dahulu
-            response = HttpResponseRedirect(reverse("wishlist:show_wishlist")) # membuat response
+            response = HttpResponseRedirect(reverse("wishlist:show_wishlist_ajax")) # membuat response
             response.set_cookie('last_login', str(datetime.datetime.now())) # membuat cookie last_login dan menambahkannya ke dalam response
             return response
         else:
@@ -74,3 +74,23 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('wishlist:login'))
     response.delete_cookie('last_login')
     return response
+
+def show_wishlist_ajax(request):
+    data_barang_wishlist = BarangWishlist.objects.all()
+    context = {
+        'list_barang': data_barang_wishlist,
+        'nama': 'Hanin',
+        'last_login': request.COOKIES['last_login'],
+    }
+    return render(request, "wishlist_ajax.html", context)
+
+@login_required(login_url='/wishlist/login/')
+def submit_ajax(request):
+    if request.method == 'POST':
+        newItem = BarangWishlist(
+            nama_barang=request.POST.get('nama_barang'),
+            harga_barang=request.POST.get('harga_barang'),
+            deskripsi=request.POST.get('deskripsi'),
+        )
+        newItem.save()
+    return HttpResponseRedirect(reverse('wishlist:show_wishlist_ajax'))

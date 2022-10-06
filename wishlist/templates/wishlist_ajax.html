@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<nav class="navbar" style="background-color:thistle;">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">{{nama}}'s wishlist</span>
+      <a class="btn btn-outline-success me-2" type="button" href="{% url 'wishlist:logout' %}">Log Out</a>
+    </div>
+  </nav>
+
+<table class = "table w-auto" style="background-color:lightpink; margin-right:auto; margin-top:25px;">
+    <tr>
+    <th>Nama Barang</th>
+    <th>Harga Barang</th>
+    <th>Deskripsi</th>
+    </tr>
+    {% comment %} Tambahkan data di bawah baris ini {% endcomment %}
+    <script>
+        function yaa(event){
+            event.prevenDefault()
+            $.post("/ajax/submit/"),
+                {
+                    nama_barang : document.getElementById("nama_barang").value,
+                    harga_barang : document.getElementById("harga_barang").value,
+                    deskripsi: document.getElementById("deskripsi").value,
+                }
+            };
+            return false;
+        
+    </script>
+    
+    <h5>Nama: {{nama}}</h5>
+    <br>
+    <button onclick="refresh2()">get data</button>
+    <div id="Lala"></div>
+    <br>
+    <br>
+    <form method="POST" id="formnya" onsubmit="return yaa()">
+        {% csrf_token %}
+        <label for="nama_barang">Nama Barang:</label><br>
+        <input id="nama_barang" type="text" name="nama_barang"><br>
+        <label for="harga_barang">Harga Barang:</label><br>
+        <input id="harga_barang" type="number" name="harga_barang"><br>
+        <label for="deskripsi">Deskripsi:</label><br>
+        <input id="deskripsi" type="text" name="diskripsi">
+        <button type="submit">Submit</button>
+    </form>
+    <h5>Sesi terakhir login: {{ last_login }}</h5>
+    <button>Logout</button>
+
+</table>
+<h5>Sesi terakhir login: {{ last_login }}</h5>
+
+{% endblock content %}
